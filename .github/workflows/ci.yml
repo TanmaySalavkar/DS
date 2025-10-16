@@ -1,0 +1,72 @@
+name: CI - DVC + Lint + Test + Build
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  setup:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: "3.11"
+
+      - name: Cache pip
+        uses: actions/cache@v4
+        with:
+          path: ~/.cache/pip
+          key: ${{ runner.os }}-pip-${{ hashFiles('**/requirements.txt') }}
+
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r requirements.txt
+
+  lint-test-dvc:
+    needs: setup
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: "3.11"
+
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r requirements.txt
+
+      - name: DVC Pull dataset
+        run: |
+          dvc pull
+          ls -lh data/
+
+      - name: Lint
+        run: flake8 src tests
+
+      - name: Run Tests
+        run: pytest -v --maxfail=1 --disable-warnings
+
+  build:
+    needs: lint-test-dvc
+    runs-on: ubuntu-latest
+    if: success()
+    steps:
+      - uses: actions/checkout@v4
+      - name: Archive processed data or results
+        run: |
+          mkdir -p results
+          python src/process_books.py > results/output.txt
+      - uses: actions/upload-artifact@v4
+        with:
+          name: processed-results
+          path: results/
