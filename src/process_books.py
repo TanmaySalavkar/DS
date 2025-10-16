@@ -1,5 +1,6 @@
 import pandas as pd
 
+
 def main():
     # Load CSV
     df = pd.read_csv("data/Books_Dataset.csv")
@@ -18,6 +19,7 @@ def main():
         print(df["Title"].head())
     else:
         print("Title column not found in dataset!")
+
 
 if __name__ == "__main__":
     main()

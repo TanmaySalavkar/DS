@@ -1,10 +1,10 @@
 import pandas as pd
-import os
 from io import StringIO
 import sys
 
-# Import the main function from process_books
+
 from src.process_books import main
+
 
 def test_process_books(monkeypatch, tmp_path):
     # Create a mock CSV in a temporary directory
@@ -21,7 +21,9 @@ Book5,Science,AuthorE
     csv_file.write_text(csv_content)
 
     # Patch the path used in process_books.py to point to our temp CSV
-    monkeypatch.setattr("src.process_books.pd.read_csv", lambda path: pd.read_csv(csv_file))
+    monkeypatch.setattr(
+        "src.process_books.pd.read_csv", lambda path: pd.read_csv(csv_file)
+    )
 
     # Capture stdout
     captured_output = StringIO()
