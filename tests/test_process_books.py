@@ -1,8 +1,10 @@
+# flake8: noqa: E402
 import pandas as pd
 from io import StringIO
 import sys
 from pathlib import Path
-sys.path.append(str(Path(__file__).resolve().parent.parent / "src"))
+
+sys.path.append(str(Path(__file__).resolve().parent.parent / "src"))  # noqa: E402
 from process_books import main
 
 def test_process_books(monkeypatch, tmp_path):
@@ -21,7 +23,7 @@ Book5,Science,AuthorE
 
     # Patch the path used in process_books.py to point to our temp CSV
     monkeypatch.setattr(
-        "src.process_books.pd.read_csv", lambda path: pd.read_csv(csv_file)
+        "process_books.pd.read_csv", lambda path: pd.read_csv(csv_file)
     )
 
     # Capture stdout
