@@ -1,10 +1,9 @@
 import pandas as pd
 from io import StringIO
 import sys
-
-
-from src.process_books import main
-
+from pathlib import Path
+sys.path.append(str(Path(__file__).resolve().parent.parent / "src"))
+from process_books import main
 
 def test_process_books(monkeypatch, tmp_path):
     # Create a mock CSV in a temporary directory
