@@ -21,9 +21,10 @@ Book5,Science,AuthorE
     csv_file = data_dir / "Books_Dataset.csv"
     csv_file.write_text(csv_content)
 
-    # Patch the path used in process_books.py to point to our temp CSV
+    original_read_csv = pd.read_csv
+
     monkeypatch.setattr(
-        "process_books.pd.read_csv", lambda path: pd.read_csv(csv_file)
+        "process_books.pd.read_csv", lambda path: original_read_csv(csv_file)
     )
 
     # Capture stdout
